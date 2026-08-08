@@ -1,0 +1,612 @@
+n8n workflow automation
+
+My tasks - 
+
+Student registers → WhatsApp confirmation
+One day before workshop → Reminder
+One hour before workshop → Join link
+After workshop → Feedback form
+After attendance → Certificate download link
+Internal team → Notify HR of every new registration
+
+the configuration i need is - 
+
+Windows 11
+│
+├── Docker Desktop
+│       │
+│       ├── n8n Container
+│       ├── Evolution API Container (Later)
+│       ├── PostgreSQL (Later)
+│       └── Redis (Later)
+│
+├── VS Code
+│
+├── Git
+│
+├── PowerShell / Windows Terminal
+│
+└── Automation-Lab/
+
+Directory Hierarchy is -
+
+Automation-Lab/ #office building
+│
+├── n8n/ # department 01 # consists everything required to run n8n 
+│   ├── docker-compose.yml # instruction manual for docker like what actually the dockerd have to perform ; the blueprint that tells Docker which image to run, ports to │		expose, volumes to mount, restart policy, and environment variables.
+│   ├── .env #essential for data privacy , used to store sensitive and variable data 
+│   ├── data/ # PERSISTENT STORAGE / will store workflows so like if the container is deleted/restored the data or workflow is not violated
+│   └── backups/ #Exported workflows and backups for migration and disaster recovery.
+│
+├── evolution/ # department 02  #Reserved for the WhatsApp automation service. Keeping it isolated makes it easy to update, replace, or troubleshoot
+│ 	independently.
+│   ├── docker-compose.yml
+│   ├── .env
+│   └── data/
+│
+├── shared/ # department 03 #Resources used by multiple services.
+│   ├── ssl/ # HTTPS certificates
+│   ├── uploads/ # shared files
+│   └── scripts/ #reuseable automation & maintenance scripts 
+│
+├── assests/ # department 04
+│   ├── diagrams/
+│   └── screenshots/
+│
+├── docs/ # department 05
+│   ├── 01-setup.md
+│   ├── 02-docker-fundamentals.md
+│   ├── 03-docker-compose.md
+│   ├── 04-n8n-basics.md
+│   ├── 05-google-sheets.md
+│   ├── 06-whatsapp-automation.md
+│   ├── 07-ai-agents.md
+│   ├── 08-production-deployment.md
+│   ├── 09-git-&-github-fundamentals.md
+│   └── architecture.md
+│   └── workflows.md
+│   └── troubleshooting.md
+│   └── glossary.md
+│
+└── README.md
+
+my workflow will look like - 
+Student fills Google Form
+          │
+          ▼
+ Google Sheets receives new response
+          │
+          ▼
+      n8n detects new row
+          │
+          ▼
+Extract Name + Phone + Workshop Details
+          │
+          ▼
+Send WhatsApp Message
+          │
+          ▼
+Send Email
+Notify Team
+Add to CRM
+
+n8n workflow concepts i need to learn - 
+Triggers
+Nodes
+Credentials
+APIs
+Expressions ({{ }})
+Data mapping
+Testing workflows
+Debugging
+Executions
+Automation logic
+
+end goal - 
+Google Form
+      │
+      ▼
+Google Sheets
+      │
+      ▼
+n8n
+      │
+      ├── WhatsApp Confirmation
+      ├── Email Confirmation
+      ├── Notify HR Team
+      ├── Create Student Folder in Google Drive
+      ├── Generate Student ID
+      ├── Add to CRM
+      ├── Add to WhatsApp Community List
+      ├── Send Reminder 1 Day Before
+      ├── Send Reminder 1 Hour Before
+      ├── Send Feedback Form After Workshop
+      ├── Generate Certificate
+      └── Update Attendance Dashboard
+
+Before opening n8n, make sure you have:
+✅ Google Account
+✅ Google Form
+✅ Google Sheet connected to Form
+✅ WhatsApp Business Number (recommended)
+✅ method of WhatsApp automation selection
+
+There are many ways to send WhatsApp messages.
+Meta WhatsApp Cloud API is 
+		Official
+		Free testing
+		Reliable
+		Scalable
+		Integrates directly with n8n
+Twilio
+UltraMsg
+CallMeBot
+WhatsApp Web + n8n (100% Free)
+Evolution API ⭐⭐⭐⭐⭐
+
+BUT - 
+Twilio → Paid after trial.
+WhatsApp Cloud API → Official but has limits, requires Meta setup, and eventually becomes paid depending on conversation categories.
+UltraMsg → Paid after free trial.
+360Dialog → Paid.
+WATI → Paid.
+
+WhatsApp Web + n8n (100% Free) →You'll connect your existing WhatsApp account to n8n using an automation service.
+Some options are:
+Evolution API (self-hosted)
+Baileys
+OpenWA
+WhatsApp-web.js
+These use WhatsApp Web instead of the Cloud API.
+
+Pros
+✅ Free
+✅ Unlimited messages (practically, as long as you don't spam)
+✅ Works with your normal WhatsApp number
+✅ Perfect for workshops
+
+Cons
+❌ Not officially supported by Meta
+❌ If abused (mass marketing/spam), your number can get banned
+❌ Your WhatsApp session must stay logged in
+
+Evolution API
+Google Form
+        ↓
+Google Sheets
+        ↓
+n8n
+        ↓
+Evolution API
+        ↓
+Your WhatsApp
+
+VS Extensions i need to download - 
+
+Entension	Why you need it 
+**Docker**	Manage Docker containers, images, volumes, and logs directly from VS Code.
+**YAML**	 Syntax highlighting, validation, and autocomplete for `docker-compose.yml` and other YAML files.
+**GitLens**	Supercharges Git with history, blame, commit insights, and collaboration features.
+**Prettier - Code Formatter**	Automatically formats JSON, YAML, JavaScript, Markdown, etc.
+**Thunder Client**	lightweight API testing (similar to Postman) directly inside VS Code.
+
+my learning strategy will be - 
+Linux
+      ↓
+Package Manager (apt)
+      ↓
+Docker
+      ↓
+Docker Images
+      ↓
+Containers
+      ↓
+Volumes
+      ↓
+Networks
+      ↓
+Docker Compose
+      ↓
+n8n
+      ↓
+Automation
+
+docker workflow - 
+
+Dockerfile
+      │
+      ▼
+docker build
+      │
+      ▼
+Docker Image
+      │
+ ┌────┴────┐
+ │         │
+ ▼         ▼
+docker tag docker inspect
+ │
+ ▼
+docker save ─────► image.tar ─────► docker load
+ │
+ ▼
+docker run
+ │
+ ▼
+Container
+ │
+ ├── docker export ─────► container.tar ─────► docker import
+ │
+ ▼
+docker rm
+ │
+ ▼
+docker rmi
+
+                      Student
+
+                         │
+                         ▼
+
+                Google Registration Form
+
+                         │
+                         ▼
+
+                  Google Sheets (Database)
+
+                         │
+                         ▼
+
+                    n8n Trigger
+
+                         │
+                         ▼
+
+                AI Decision Agent (LLM)
+
+                         │
+        ┌────────────────┼────────────────┐
+        ▼                ▼                ▼
+ Validate Data      Classify Lead    Generate Messages
+
+                         │
+                         ▼
+
+                Event Workflow Router
+
+        ┌──────────┬──────────┬──────────┬──────────┐
+        ▼          ▼          ▼          ▼
+
+ WhatsApp      Email      Google Drive     CRM
+
+        ▼          ▼          ▼          ▼
+
+ Reminder    Student Folder   Student ID   Dashboard
+
+        ▼
+ Certificate
+
+        ▼
+ Feedback
+
+        ▼
+ Analytics
+
+
+my current n8n workflow - 
+┌──────────────────────────┐
+│  Layer 1 : Trigger       │
+└────────────┬─────────────┘
+             │
+┌────────────▼─────────────┐
+│  Layer 2 : Normalize     │
+└────────────┬─────────────┘
+             │
+┌────────────▼─────────────┐
+│  Layer 3 : Validate      │
+└────────────┬─────────────┘
+             │
+┌────────────▼─────────────┐
+│  Layer 4 : AI Decision   │
+└────────────┬─────────────┘
+             │
+┌────────────▼─────────────┐
+│  Layer 5 : Operations    │
+└────────────┬─────────────┘
+             │
+┌────────────▼─────────────┐
+│  Layer 6 : Notifications │
+└──────────────────────────┘
+
+Student Data
+────────────
+student_name
+phone
+email
+college
+
+System Metadata
+───────────────
+registration_status
+created_at
+workflow_version
+assigned_batch
+
+AI Data
+────────
+lead_score
+lead_type
+priority
+ai_summary
+
+
+Layer 1: Data Ingestion (Google Sheets Trigger)
+Layer 2: Data Processing (Normalize, Validate, Metadata, Student ID)
+Layer 3: AI Intelligence (Gemini Decision Engine)
+Layer 4: Communication (WhatsApp, Email)
+Layer 5: Storage (Google Drive, CRM, Attendance)
+Layer 6: Event Automation (Reminders, Feedback, Certificates)
+
+Generate Student ID
+        │
+        ▼
+Gemini AI Decision Engine
+        │
+        ├── Lead Score
+        ├── Batch Recommendation
+        ├── Personalized WhatsApp
+        ├── Personalized Email
+        ├── AI Summary
+        ├── Spam Detection
+        └── Student Profile
+
+newer approach - 
+
+Google Sheets Trigger
+      ↓
+Normalize Student Data
+      ↓
+Validate Student Data
+      ↓
+Generate Metadata
+      ↓
+Generate Student ID
+      ↓
+Google Gemini Chat Model
+      ↓
+Structured Output Parser
+      ↓
+WhatsApp
+Email
+CRM
+
+
+newer approach 02 - 
+
+Google Sheets Trigger
+        │
+Normalize Student Data
+        │
+Validate Student Data
+        │
+Generate Metadata
+        │
+Generate Student ID
+        │
+AI Agent
+        │
+OpenAI Chat Model
+        │
+Structured Output Parser
+        │
+Google Sheets Update
+        │
+WhatsApp
+        │
+Email
+
+newer approach 03 - 
+
+Google Form
+      │
+Google Sheets
+      │
+Google Sheets Trigger
+      │
+Normalize Data
+      │
+Generate Student ID
+      │
+AI Agent
+      │
+Ollama Chat Model (Local AI)
+      │
+Structured Output Parser
+      │
+WhatsApp
+      │
+Email
+      │
+Google Drive
+      │
+Certificates
+
+
+Google Sheets Trigger
+        │
+        ▼
+Does this row already have a Student ID?
+        │
+   ┌────┴────┐
+   │         │
+ Yes        No
+   │         │
+Skip ID   Generate ID
+
+Google Form
+        ↓
+Google Sheets Trigger
+        ↓
+Normalize Data
+        ↓
+Validate Data
+        ↓
+IF Student_ID is empty
+        │
+        ├── Yes
+        │      ↓
+        │ Generate Sequential Student ID
+        │      ↓
+        │ Update Google Sheet
+        │
+        └── No
+               ↓
+        Continue
+                ↓
+Generate Metadata
+                ↓
+AI Admissions Engine
+                ↓
+Lead Score + Personalized Intro
+                ↓
+WhatsApp Message
+                ↓
+Email
+                ↓
+CRM
+                ↓
+Certificate Database
+
+
+Google Form
+      ↓
+Google Sheets Trigger
+      ↓
+Normalize Data
+      ↓
+Validate Data
+      ↓
+Google Sheets (Get Rows)
+      ↓
+Generate Student ID
+      ↓
+Google Sheets (Update Row)
+      ↓
+Generate Metadata
+      ↓
+AI Agent
+      ↓
+WhatsApp
+
+
+```
+Google Form
+
+↓
+
+Google Sheets Trigger
+
+↓
+
+Normalize
+
+↓
+
+Validate
+
+↓
+
+IF Registration ID empty?
+
+↓
+
+TRUE
+
+↓
+
+Read Google Sheet
+
+↓
+
+Count Registration IDs
+
+↓
+
+Generate Registration ID
+
+↓
+
+Update Row
+
+↓
+
+AI Analysis
+
+↓
+
+Generate Metadata
+
+↓
+
+Generate Email
+
+↓
+
+Generate WhatsApp
+
+↓
+
+Certificate
+
+↓
+
+Done
+```
+
+Google Form
+      │
+      ▼
+Google Sheets
+      │
+      ▼
+Generate Registration ID
+      │
+      ▼
+Generate QR
+      │
+      ▼
+Update Sheet
+      │
+      ▼
+Send Premium HTML Mail
+      │
+      ▼
+Send WhatsApp Confirmation
+      │
+      ▼
+Reminder - 3 Days Before
+      │
+      ▼
+Reminder - 1 Day Before
+      │
+      ▼
+Reminder - 2 Hours Before
+      │
+      ▼
+QR Scan at Entry
+      │
+      ▼
+Attendance Marked Automatically
+      │
+      ▼
+Certificate Generated
+      │
+      ▼
+Certificate Mail
+      │
+      ▼
+LinkedIn Feedback Automation
+      │
+      ▼
+Student Database Updated
