@@ -65,7 +65,9 @@ Google Form ──▶ Normalize ──▶ Validate ──▶ Reg ID Verification
 ```
 
 *(Add an actual screenshot of each n8n canvas here — `docs/screenshots/`)*
+![alt text](<Screenshot from 2026-08-08 21-49-55.png>)
 
+![alt text](<Screenshot from 2026-08-08 21-49-47.png>)
 ---
 
 ## Prerequisites
